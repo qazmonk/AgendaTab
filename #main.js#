@@ -1,0 +1,120 @@
+var client = new Dropbox.Client({
+  key: "b0ru6qxlvkbh3he"
+});
+
+client.authDriver(new Dropbox.AuthDriver.ChromeExtension({
+  receiverPath: "chrome_oauth_receiver.html"}));
+
+
+client.authenticate(function(error, client) {
+  if (error) {
+    console.log("ERROR");
+    return 0;
+  }
+
+  console.log("Authenticated!");
+
+  client.readFile("org/agenda/school-work.org", function (error, data) {
+    if (error) {
+      console.log("ERROR");
+      return 0;
+    }
+
+    $('#file-block').html(data);
+    console.log(data);
+    return 1;
+  });
+
+  
+  return 1;
+});
+var client = new Dropbox.Client({
+  key: "b0ru6qxlvkbh3he"
+});
+
+client.authDriver(new Dropbox.AuthDriver.ChromeExtension({
+  receiverPath: "chrome_oauth_receiver.html"}));
+
+
+client.authenticate(function(error, client) {
+  if (error) {
+    console.log("ERROR");
+    return 0;
+  }
+
+  console.log("Authenticated!");
+
+  client.readFile("org/agenda/school-work.org", function (error, data) {
+    if (error) {
+      console.log("ERROR");
+      return 0;
+    }
+
+    $('#file-block').html(data);
+    console.log(data);
+    return 1;
+  });
+
+  
+  return 1;
+});
+var client = new Dropbox.Client({
+  key: "b0ru6qxlvkbh3he"
+});
+
+client.authDriver(new Dropbox.AuthDriver.ChromeExtension({
+  receiverPath: "chrome_oauth_receiver.html"}));
+
+
+client.authenticate(function(error, client) {
+  if (error) {
+    console.log("ERROR");
+    return 0;
+  }
+
+  console.log("Authenticated!");
+
+  client.readFile("org/agenda/school-work.org", function (error, data) {
+    if (error) {
+      console.log("ERROR");
+      return 0;
+    }
+
+    $('#file-block').html(data);
+    console.log(data);
+    return 1;
+  });
+
+  
+  return 1;
+});
+var client = new Dropbox.Client({
+  key: "b0ru6qxlvkbh3he"
+});
+
+client.authDriver(new Dropbox.AuthDriver.ChromeExtension({
+  receiverPath: "chrome_oauth_receiver.html"}));
+
+
+client.authenticate(function(error, client) {
+  if (error) {
+    console.log("ERROR");
+    return 0;
+  }
+
+  console.log("Authenticated!");
+
+  client.readFile("org/agenda/school-work.org", function (error, data) {
+    if (error) {
+      console.log("ERROR");
+      return 0;
+    }
+
+    $('#file-block').html(data);
+    console.log(data);
+    return 1;
+  });
+
+  
+  return 1;
+});

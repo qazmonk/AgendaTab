@@ -1,0 +1,66 @@
+body {
+    background-color:#E0E1DD
+}
+
+ul {
+ 
+
+    border-radius: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.1em;
+    list-style-type: none;
+    padding: 0;
+    padding-top: 8px;
+    padding-bottom: 10px;
+
+}
+
+.todo-title {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    color: #c9cac6
+               
+}
+.tri-split {
+    width: 33%;
+    float: left;
+}
+
+.todo-list {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+#full-list {
+    background: #99D1D5;
+
+}
+
+#week-list {
+    background: #d59d99;
+}
+#filter {
+
+}
+#filter-list {
+    background: #d1d599;
+}
+li {
+    margin: 0px;
+}
+.todo-elem {
+    margin-left: 5%;
+    margin-right: 5%;
+}
+#full-list > li:nth-child(even) {
+    background-color:#89bcbf;
+}
+#week-list > li:nth-child(even) {
+    background-color:#bf8d89;
+}
+
+#filter-list > li:nth-child(even) {
+    background-color:#bcbf89;
+}

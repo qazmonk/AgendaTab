@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <title>TODO New Tab</title>
+    <link rel="stylesheet" type="text/css" href="todo.css"/>
+    <script src="dropbox.min.js"></script>
+    <script src="jquery-2.2.3.min.js"></script>
+    <script src="parser.js"></script>
+    <script src="lexer.js"></script>
+    <script src="main.js"></script>
+  </head>
+  <body>
+    <div class="tri-split">
+      <div class="todo-list">
+        <h1 class="todo-title">All TODOs</h1>
+        <ul id="full-list">
+        </ul>
+      </div>
+    </div>
+    <div class="tri-split">
+      <div class="todo-list">
+        <h1 class="todo-title">Next Week</h1>
+        <ul id="week-list">
+        </ul>
+      </div>
+    </div>
+    <div id="filter" class="tri-split">
+      <div class="todo-list">
+        <h1 class="todo-title">Filter</h1>        
+        <ul id="filter-list">
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>
+
