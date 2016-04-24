@@ -71,3 +71,34 @@ var make_toggle_todo_fn = function (todo_idx, list_idx) {
   return toggle;
 };
 
+var make_saveable = function (todos) {
+  var saveable_todos = [];
+  for (var i = 0; i < todos.length; i++) {
+    saveable_todos[i] = { subtext: todos[i].subtext,
+                          tags: todos[i].tags,
+                          text: todos[i].text,
+                          $elem: todos[i].$elem
+                        };
+    var date = todos[i].date;    
+    if (date !== undefined) {
+      saveable_todos[i].date = date.toString();
+    }
+  }
+  return saveable_todos;
+};
+
+var unsaveable_todos = function (saveable_todos) {
+  var todos = [];
+  for (var i = 0; i < saveable_todos.length; i++) {
+    todos[i] = { subtext: saveable_todos[i].subtext,
+                 tags: saveable_todos[i].tags,
+                 text: saveable_todos[i].text,
+                 $elem: saveable_todos[i].$elem
+               };
+    var date = saveable_todos[i].date;    
+    if (date !== undefined) {
+      todos[i].date = new Date(date);
+    }    
+  }
+  return todos;  
+};

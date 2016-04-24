@@ -51,7 +51,9 @@ var remove_file = function() {
   window.files = files;
   save_file_names(function () {
     console.log('saved files!');
-    get_files_and_render();
+    load_files(function () {
+      render_page();
+    });
   });
 };
 
@@ -74,7 +76,9 @@ var enter_file = function(e) {
     window.files.push($input.val());
     save_file_names(function () {
       console.log('files saved!');
-      get_files_and_render();
+      load_files(function () {
+        render_page();
+      });
     });
     
   }
@@ -84,10 +88,28 @@ var save_file_names = function (callback) {
   chrome.storage.local.set({'files': window.files}, callback);
 };
 
+var save_version_tags = function (callback) {
+  chrome.storage.local.set({'versionTags': window.versionTags}, callback);
+};
+
+var save_todos = function (callback) {
+  save_todos = make_saveable(window.todos);
+  chrome.storage.local.set({'todos': save_todos}, callback);
+};
+
 var get_file_names = function (callback) {
-  chrome.storage.local.get('files', function (result) {
+  chrome.storage.local.get({'files': [], 'versionTags': []}, function (result) {
     window.files = result.files;
-    callback(result.files);
+    window.versionTags = result.versionTags;
+    callback(result.files, result.versionTags);
+  });
+};
+
+var get_todos = function (callback) {
+  chrome.storage.local.get({'todos': []}, function (result) {
+    window.todos = unsaveable_todos(result.todos);
+    console.log(result.todos);
+    callback(result.todos);
   });
 };
 
@@ -99,14 +121,19 @@ var render_file_list = function () {
   $('#file-input').keyup(enter_file);
 };
 
-var render_page = function(data) {
+var setup_todos = function (data) {
   var lexer = new window.Lexer(data);
   var tokens = lexer.lex();
   var parser = new window.Parser(tokens);
   var headlines = parser.parse();
   var todos = find_todos(headlines);
-  todos.sort(function (t1, t2) { return date_cmp(t1.date, t2.date); });    
+  todos.sort(function (t1, t2) { return date_cmp(t1.date, t2.date); });
   window.todos = todos;
+  save_todos(function () { console.log('saved todo list'); });
+};
+
+var render_page = function() {
+  todos = window.todos;
   var $full = $('#full-list');
   $full.empty();
   var $week = $('#week-list');
@@ -116,10 +143,13 @@ var render_page = function(data) {
   var next_week = new Date(Date.now());
   next_week.setDate(next_week.getDate() + 7);
   next_week.setHours(0, 0, 0, 0);
+  var today = new Date(Date.now());
+  today.setHours(0, 0, 0, 0);
   var cur_day = new Date(Date.now());
   cur_day.setHours(0, 0, 0, 0);
-  cur_day.setDate(cur_day.getDate() + 1);
-  $week.append('<li><div class="weekday-elem">Today</div></li>');
+  if (date_cmp(todos[0].date, cur_day) < 0) {
+    $week.append('<li><div class="weekday-elem">Past Due</div></li>');
+  }
   for (var i = 0; i < todos.length; i++) {
     var $li = $('<li><div class="todo-elem">' + todos[i].text + '</div></li>');
     $full.append($li);
@@ -127,8 +157,12 @@ var render_page = function(data) {
     $li.click(make_toggle_todo_fn(i, 0));
     if (date_cmp(todos[i].date, next_week) < 0) {
       if (date_cmp(todos[i].date, cur_day) >= 0) {
-        $week.append('<li><div class="weekday-elem">' + day_to_string(cur_day.getDay())
-                     + '</li></div>');
+        if (date_cmp(cur_day, today) === 0) {
+          $week.append('<li><div class="weekday-elem">Today</div></li>');
+        } else {
+          $week.append('<li><div class="weekday-elem">' + day_to_string(cur_day.getDay())
+                       + '</li></div>');
+        }
         cur_day.setDate(cur_day.getDate() + 1);
       }
       var $week_li = $li.clone();
@@ -144,17 +178,43 @@ var render_page = function(data) {
   }
   $('#filter-input').keyup(filter_todos);
 };
-var get_files_and_render = function() {
+var files_changed = function (callback) {
+  var versionTags = window.versionTags;
+  var file_changed = function(file_idx, callback) {
+    if (file_idx < files.length) {
+      console.log('checking for file change ' + file_idx);
+      client.stat(files[file_idx], function (error, stat, entries) {
+        if (error) {
+          console.log(files[file_idx] + ' not found!');
+          file_changed(file_idx + 1, callback);
+        } else {
+          if (versionTags[file_idx] != stat.versionTag) {
+            callback(true);
+          } else {
+            versionTags.push(stat.versionTag);
+            file_changed(file_idx + 1, callback);
+          }
+        }
+      });
+    } else {
+      callback(false);
+    }
+  };
+  file_changed(0, callback);
+};
+var load_files = function(callback) {
   var total_data = "";
+  var versionTags = [];
   var load_file = function(file_idx, callback) {
     if (file_idx < files.length) {
       console.log('loading file ' + file_idx);
-      client.readFile(files[file_idx], function (error, data) {
+      client.readFile(files[file_idx], function (error, data, meta) {
         if (error) {
           console.log(files[file_idx] + ' not found!');
           load_file(file_idx + 1, callback);
           return 0;
         }
+        versionTags.push(meta.versionTag);
         total_data += data;
         load_file(file_idx + 1, callback);
         return 1;
@@ -164,14 +224,17 @@ var get_files_and_render = function() {
     }
   };
   load_file(0, function () {
-    render_page(total_data);
+    window.versionTags = versionTags;
+    save_version_tags(function() {
+      setup_todos(total_data);
+      callback();
+    });
   });
 };
 //DROPBOX SETUP
 var client = new Dropbox.Client({
   key: "b0ru6qxlvkbh3he"
 });
-
 
 client.authDriver(new Dropbox.AuthDriver.ChromeExtension({
   receiverPath: "chrome_oauth_receiver.html"}));
@@ -185,9 +248,20 @@ $(document).ready(
 
     console.log("Authenticated!");
 
-    get_file_names(function (files) {
-      render_file_list();
-      get_files_and_render();
+    get_file_names(function (files, versionTags) {
+      files_changed(function (changed) {
+        render_file_list();
+        if (changed) {
+          load_files(function () {
+            render_page();
+          });
+        } else {
+          console.log('files not changed, loading cached copy');
+          get_todos(function () {
+            render_page();
+          });
+        }
+      });
     });    
     return 1;
   })
