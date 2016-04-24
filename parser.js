@@ -14,6 +14,7 @@ Parser.prototype.parse_headline = function () {
     isTODO = true;
   }
   var title = this.data[line_num][cur_token].text;
+  cur_token++;
   var tags = [];
   var i = 0;
   for (; cur_token < this.data[line_num].length; cur_token++) {
@@ -41,9 +42,13 @@ Parser.prototype.parse_chidren = function (level) {
       children.subtrees.push(sub_child);
     } else {
       if (this.data[line_num][0].type === 'DEADLINE') {
-        var date_re = /\d\d\d\d-\d\d-\d\d/;
+        var date_re = /(\d\d\d\d)-(\d\d)-(\d\d)/;
         var date_found = this.data[line_num][0].date.match(date_re);
-        children.deadline = Date.parse(date_found[0]);
+        children.deadline = new Date();
+        children.deadline.setFullYear(parseInt(date_found[1]),
+                                      parseInt(date_found[2])-1,
+                                      parseInt(date_found[3]));
+        children.deadline.setHours(0, 0, 0, 0);
         children.text.push(this.data[line_num][1].text);
         line_num++;
       } else {

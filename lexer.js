@@ -40,10 +40,10 @@ var lex_non_headline = function(line) {
   if (deadline_found === null) {
     tokens[0] = { type: 'TEXT', text: line };
   } else {
-    var rest = line.slice(0, deadline_found.index) +
-          line.slice(deadline_found.index + deadline_found[0].length);
+    /*var rest = line.slice(0, deadline_found.index) +
+          line.slice(deadline_found.index + deadline_found[0].length);*/
     tokens[0] = { type: 'DEADLINE', date: deadline_found[1] };
-    tokens[1] = { type: 'TEXT', text: rest };
+    tokens[1] = { type: 'TEXT', text: line };
   }
   return tokens;
 };

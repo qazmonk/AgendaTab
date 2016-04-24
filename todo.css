@@ -3,7 +3,6 @@ body {
 }
 
 ul {
- 
 
     border-radius: 10px;
     margin-left: auto;
@@ -13,6 +12,7 @@ ul {
     padding: 0;
     padding-top: 8px;
     padding-bottom: 10px;
+    margin-top: 0;
 
 }
 
@@ -32,6 +32,7 @@ ul {
     width: 90%;
     margin-left: auto;
     margin-right: auto;
+    margin-top: none;
 }
 #full-list {
     background: #99D1D5;
@@ -50,17 +51,65 @@ ul {
 li {
     margin: 0px;
 }
+.wrapper {
+    overflow: hidden;
+}
+.weekday-elem {
+    font-weight: bold;
+    color: #a3706c;
+    margin-left: 2%;
+}
 .todo-elem {
     margin-left: 5%;
     margin-right: 5%;
+    font-family: monospace;
+}
+
+.subtext {
+    margin-top: 4px;
+    margin-left: 7%;
+}
+#filter-input {
+    font-family: monospace;
+    width: 100%;
 }
 #full-list > li:nth-child(even) {
-    background-color:#89bcbf;
+    background-color: #89bcbf;
 }
 #week-list > li:nth-child(even) {
-    background-color:#bf8d89;
+    background-color: #bf8d89;
 }
 
 #filter-list > li:nth-child(even) {
-    background-color:#bcbf89;
+    background-color: #bcbf89;
+}
+
+#file-list > li:nth-child(even) {
+    background-color: #c9cac6;
+}
+
+#filter-list > .exclude {
+    display: none;
+}
+
+.file-input-div {
+    width: 100%;
+    margin-left: 1.6%;
+    font-family: monospace;
+}
+
+#file-list {
+    border: thin solid black;
+    width: 29.7%;
+    margin-left: 0;
+}
+#file-input {
+    font-family: monospace;
+    width: 29.7%;
+
+}
+.close-button {
+    margin: 2%;
+    display: inline;
+    font-size: 0.8em;
 }
